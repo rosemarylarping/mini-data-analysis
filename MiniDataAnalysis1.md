@@ -1,5 +1,5 @@
 # Mini Data-Analysis: Deliverable 1
-Your name here
+Rosemary Joseph
 
 Total points available: 74
 
@@ -168,53 +168,154 @@ genderassessment |>
 
 ``` r
 genderassessment |>
+  filter(year == 2024) |>
   group_by(region) |>
-  summarize(mean_percent_score = mean(percent_score)) |>
-  arrange(mean_percent_score)
+  summarize(open_enviornment_rights = mean(enabling_environment_union_rights)) |>
+  arrange(desc(open_enviornment_rights))
 ```
 
     # A tibble: 7 × 2
-      region                     mean_percent_score
-      <chr>                                   <dbl>
-    1 Middle East & North Africa               7.75
-    2 Sub-Saharan Africa                      11   
-    3 East Asia & Pacific                     11.8 
-    4 South Asia                              12.6 
-    5 Latin America & Caribbean               14.0 
-    6 North America                           18.0 
-    7 Europe & Central Asia                   19.1 
+      region                     open_enviornment_rights
+      <chr>                                        <dbl>
+    1 Sub-Saharan Africa                         0.0256 
+    2 East Asia & Pacific                        0.00590
+    3 Europe & Central Asia                      0.00426
+    4 Latin America & Caribbean                  0      
+    5 Middle East & North Africa                 0      
+    6 North America                              0      
+    7 South Asia                                 0      
 
 ``` r
 genderassessment |>
+  filter(year == 2024) |>
   group_by(industry) |>
   summarize(mean_percent_score = mean(percent_score)) |>
   arrange(desc(mean_percent_score))
 ```
 
-    # A tibble: 37 × 2
-       industry                        mean_percent_score
-       <chr>                                        <dbl>
-     1 Personal & Household Products                 28.1
-     2 Electronics                                   24.2
-     3 Pharmaceuticals & Biotechnology               23.6
-     4 Apparel & Footwear                            22.0
-     5 Banks                                         20.6
-     6 IT Software & Services                        19.6
-     7 Retail                                        18.6
-     8 Insurance                                     18.4
-     9 Motor Vehicles & Parts                        18.3
-    10 Oil & Gas                                     18.2
-    # ℹ 27 more rows
+    # A tibble: 25 × 2
+       industry                         mean_percent_score
+       <chr>                                         <dbl>
+     1 Personal & Household Products                  27.5
+     2 Retail                                         24  
+     3 Banks                                          20.6
+     4 Motor Vehicles & Parts                         18.8
+     5 Insurance                                      18.4
+     6 <NA>                                           16  
+     7 Oil & Gas                                      15  
+     8 Capital Goods                                  14.9
+     9 Traditional Asset Managers                     14.4
+    10 Development Finance Institutions               14.2
+    # ℹ 15 more rows
 
 Write your findings here.
+
+I found that government owned companies have an average score (out of 4)
+of 0.05 for paid leave policies for caregivers, while public owned
+companies have an average score of 0.25 in the year of 2024. As for the
+living wage, I found that per region, the culture of enabling an
+environment for freedom of association and collective bargaining is on
+average only present in Africa, Asia, and Europe. Finally, the after
+exploring the average score (in percent) per industry, the personal &
+household products, retail, and banks are doing the best overall (but
+all of their averages are below 30% so is that still really good).
 
 #### Data Set 2
 
 ``` r
 ### Explore 3 variables of data set 2 ###
+hcmst
 ```
 
-Write your findings here.
+    # A tibble: 1,328 × 21
+       subject_age subject_education subject_sex subject_ethnicity
+             <dbl> <chr>             <chr>       <chr>            
+     1          53 high_school_grad  female      white            
+     2          72 some_college      female      white            
+     3          43 associate_degree  male        white            
+     4          64 some_college      male        white            
+     5          60 high_school_grad  female      black            
+     6          78 high_school_grad  female      white            
+     7          51 associate_degree  male        white            
+     8          47 associate_degree  male        2_plus_eth       
+     9          62 some_college      female      white            
+    10          59 high_school_grad  female      black            
+    # ℹ 1,318 more rows
+    # ℹ 17 more variables: subject_income_category <chr>,
+    #   subject_employment_status <chr>, same_sex_couple <chr>, married <chr>,
+    #   sex_frequency <chr>, flirts_with_partner <chr>, fights_with_partner <chr>,
+    #   relationship_duration <dbl>, children <dbl>,
+    #   rel_change_during_pandemic <chr>, inc_change_during_pandemic <chr>,
+    #   subject_had_covid <chr>, partner_had_covid <chr>, …
+
+``` r
+hcmst |>
+  mutate(vaccination_match = subject_vaccinated == partner_vaccinated, na.rm = TRUE) |>
+  group_by(relationship_quality) |>
+  count(vaccination_match, relationship_quality) 
+```
+
+    # A tibble: 13 × 3
+    # Groups:   relationship_quality [5]
+       relationship_quality vaccination_match     n
+       <chr>                <lgl>             <int>
+     1 excellent            FALSE               142
+     2 excellent            TRUE                532
+     3 excellent            NA                   12
+     4 fair                 FALSE                35
+     5 fair                 TRUE                 66
+     6 fair                 NA                    4
+     7 good                 FALSE               134
+     8 good                 TRUE                363
+     9 good                 NA                    7
+    10 poor                 FALSE                12
+    11 poor                 TRUE                 16
+    12 very_poor            FALSE                 1
+    13 very_poor            TRUE                  4
+
+``` r
+hcmst |>
+  mutate(fights_numeric = parse_number(fights_with_partner)) |>
+  group_by(subject_income_category) |>
+  summarize(mean_fights = mean(fights_numeric, na.rm = TRUE)) |>
+  arrange(desc(mean_fights))
+```
+
+    # A tibble: 21 × 2
+       subject_income_category mean_fights
+       <chr>                         <dbl>
+     1 7k_10k                        1.42 
+     2 35k_40k                       1.1  
+     3 12k_15k                       1.09 
+     4 50k_60k                       1.08 
+     5 40k_50k                       1.02 
+     6 5k_7k                         1    
+     7 over_250k                     0.987
+     8 20k_25k                       0.966
+     9 10k_12k                       0.909
+    10 25k_30k                       0.895
+    # ℹ 11 more rows
+
+``` r
+#relationship got better during covid if not married v married
+hcmst |>
+  group_by(rel_change_during_pandemic) |>
+  summarize(mean_children = mean(children))
+```
+
+    # A tibble: 3 × 2
+      rel_change_during_pandemic mean_children
+      <chr>                              <dbl>
+    1 better_than_before                  2.63
+    2 no_change                           2.52
+    3 worse_than_before                   2.79
+
+Write your findings here. More relationships were reported a better
+quality if their vaccination statuses matched. Additionally, there
+didn’t seem to be a correlation between the income category and how
+often couples fought per week. Similarly, there didn’t seem to be a
+correlation between how many children a couple had and whether their
+relationship got better or worse during the pandemic.
 
 <!----------------------------------------------------------------------------->
 
@@ -225,6 +326,10 @@ chosen, and why you’ve chosen it.
 
 <!-------------------------- Start your work below ---------------------------->
 
+I’m choosing the hcmst because I think it is interesting to predict
+relationship dynamics and especially how it was affected by the pandemic
+as I think attitudes towards COVID-19 can sometimes be indicators for
+factors like political views.
 <!----------------------------------------------------------------------------->
 
 ### 1.4: Research Question **(4 points)**
@@ -240,6 +345,10 @@ change it later if needed.
 > gender?”
 
 <!-------------------------- Start your work below ---------------------------->
+
+Is there a relationship between relationship quality and if couple’s
+vaccination statuses match? Does this relationship differ by income
+categories?
 
 <!----------------------------------------------------------------------------->
 
@@ -262,7 +371,43 @@ values per variable. Be sure to output the table.
 
 ``` r
 ### Explore missingness here ###
+hcmst |>
+  summarize(
+    mean_age = mean(is.na(subject_age)),
+    mean_education = mean(is.na(subject_education)),
+    mean_sex = mean(is.na(subject_sex)),
+    mean_ethnicity = mean(is.na(subject_ethnicity)),
+    mean_incomecat = mean(is.na(subject_income_category)),
+    mean_employment = mean(is.na(subject_employment_status)), 
+    mean_same_sex = mean(is.na(same_sex_couple)),
+    mean_married = mean(is.na(married)),
+    mean_sex_frequency = mean(is.na(sex_frequency)),
+    mean_flirt_frequency = mean(is.na(flirts_with_partner)),
+    mean_fight_frequency = mean(is.na(fights_with_partner)),
+    mean_relation_duration = mean(is.na(relationship_duration)),
+    mean_children = mean(is.na(children)),
+    mean_pandemic_rel_change = mean(is.na(rel_change_during_pandemic)),
+    mean_pandemic_inc_change = mean(is.na(inc_change_during_pandemic)),
+    mean_subject_covid = mean(is.na(subject_had_covid)),
+    mean_partner_covid = mean(is.na(partner_had_covid)),
+    mean_subject_vacc = mean(is.na(subject_vaccinated)),
+    mean_partner_vacc = mean(is.na(partner_vaccinated)),
+    mean_agree_approach = mean(is.na(agree_covid_approach)),
+    mean_relationship_quality = mean(is.na(relationship_quality))
+  )
 ```
+
+    # A tibble: 1 × 21
+      mean_age mean_education mean_sex mean_ethnicity mean_incomecat mean_employment
+         <dbl>          <dbl>    <dbl>          <dbl>          <dbl>           <dbl>
+    1        0              0        0              0              0               0
+    # ℹ 15 more variables: mean_same_sex <dbl>, mean_married <dbl>,
+    #   mean_sex_frequency <dbl>, mean_flirt_frequency <dbl>,
+    #   mean_fight_frequency <dbl>, mean_relation_duration <dbl>,
+    #   mean_children <dbl>, mean_pandemic_rel_change <dbl>,
+    #   mean_pandemic_inc_change <dbl>, mean_subject_covid <dbl>,
+    #   mean_partner_covid <dbl>, mean_subject_vacc <dbl>, mean_partner_vacc <dbl>,
+    #   mean_agree_approach <dbl>, mean_relationship_quality <dbl>
 
 <!----------------------------------------------------------------------------->
 
@@ -291,6 +436,12 @@ If missingness is not an issue, describe why.
 
 <!-------------------------- Start your work below ---------------------------->
 
+Missingness will not be an issue as I am using the variables of
+relationship quality, subject vaccination, partner vaccination, and for
+my secondary question income categories. Each of these have less than
+20% of their observations missing (0, 0.8, 1.6, and 0.15 percent
+respectively).
+
 <!----------------------------------------------------------------------------->
 
 ### 2.3: Tidy your Data **(10 points)**
@@ -314,6 +465,28 @@ Show the first 6 rows of the tidied data.
 
 <!-------------------------- Start your work below ---------------------------->
 
+``` r
+hcmst_tidy <- hcmst |>
+  mutate(vaccination_match = subject_vaccinated == partner_vaccinated, na.rm = TRUE) |>
+  select(vaccination_match, relationship_quality, subject_income_category, children) 
+hcmst_tidy
+```
+
+    # A tibble: 1,328 × 4
+       vaccination_match relationship_quality subject_income_category children
+       <lgl>             <chr>                <chr>                      <dbl>
+     1 TRUE              excellent            35k_40k                        2
+     2 TRUE              good                 75k_85k                        1
+     3 TRUE              excellent            75k_85k                        5
+     4 TRUE              good                 75k_85k                        2
+     5 FALSE             excellent            75k_85k                        3
+     6 TRUE              excellent            50k_60k                        2
+     7 TRUE              good                 40k_50k                        3
+     8 FALSE             poor                 30k_35k                        2
+     9 TRUE              excellent            40k_50k                        2
+    10 FALSE             good                 40k_50k                        2
+    # ℹ 1,318 more rows
+
 <!----------------------------------------------------------------------------->
 
 ### 2.4: Create a Table (10 points)
@@ -325,6 +498,20 @@ dropping the missing values if they exist.
 Show the outputted table.
 
 <!-------------------------- Start your work below ---------------------------->
+
+``` r
+hcmst_tidy |>
+  summarize(
+    mean_children = mean(children),
+    min_children = min(children),
+    max_children = max(children)
+  )
+```
+
+    # A tibble: 1 × 3
+      mean_children min_children max_children
+              <dbl>        <dbl>        <dbl>
+    1          2.55            1           10
 
 <!----------------------------------------------------------------------------->
 
