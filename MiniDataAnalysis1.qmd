@@ -1,7 +1,7 @@
 ---
 title: "Mini Data-Analysis: Deliverable 1"
 format: gfm
-author: "Your name here"
+author: "Rosemary Joseph"
 ---
 
 Total points available: 74
@@ -96,11 +96,13 @@ genderassessment |>
   summarize(mean_paidleave = mean(carer_leave_paid, na.rm = TRUE))
 
 genderassessment |>
+  filter(year == 2024) |>
   group_by(region) |>
-  summarize(mean_percent_score = mean(percent_score)) |>
-  arrange(mean_percent_score)
+  summarize(open_enviornment_rights = mean(enabling_environment_union_rights)) |>
+  arrange(desc(open_enviornment_rights))
 
 genderassessment |>
+  filter(year == 2024) |>
   group_by(industry) |>
   summarize(mean_percent_score = mean(percent_score)) |>
   arrange(desc(mean_percent_score))
@@ -109,26 +111,37 @@ genderassessment |>
 
 Write your findings here.
 
-
+I found that government owned companies have an average score (out of 4) of 0.05 for paid leave policies for caregivers, while public owned companies have an average score of 0.25 in the year of 2024. As for the living wage, I found that per region, the culture of enabling an environment for freedom of association and collective bargaining is on average only present in Africa, Asia, and Europe. Finally, the after exploring the average score (in percent) per industry, the personal & household products, retail, and banks are doing the best overall (but all of their averages are below 30% so is that still really good). 
 
 
 #### Data Set 2
 ```{r}
 ### Explore 3 variables of data set 2 ###
+hcmst
 
+hcmst |>
+  mutate(vaccination_match = subject_vaccinated == partner_vaccinated, na.rm = TRUE) |>
+  group_by(relationship_quality) |>
+  count(vaccination_match, relationship_quality) 
+
+hcmst |>
+  mutate(fights_numeric = parse_number(fights_with_partner)) |>
+  group_by(subject_income_category) |>
+  summarize(mean_fights = mean(fights_numeric, na.rm = TRUE)) |>
+  arrange(desc(mean_fights))
+
+#relationship got better during covid if not married v married
+hcmst |>
+  group_by(rel_change_during_pandemic) |>
+  summarize(mean_children = mean(children))
+  
+  
 ```
 
 Write your findings here.
-
-
-
+More relationships were reported a better quality if their vaccination statuses matched. Additionally, there didn't seem to be a correlation between the income category and how often couples fought per week. Similarly, there didn't seem to be a correlation between how many children a couple had and whether their relationship got better or worse during the pandemic. 
 
 <!----------------------------------------------------------------------------->
-
-
-
-
-
 
 
 ### 1.3: Choose 1 Data Set **(2 points)**
@@ -136,9 +149,7 @@ Write your findings here.
 It's time to choose only one data set. State the data set that you've chosen, and why you've chosen it.
 
 <!-------------------------- Start your work below ---------------------------->
-
-
-
+I'm choosing the hcmst because I think it is interesting to predict relationship dynamics and especially how it was affected by the pandemic as I think attitudes towards COVID-19 can sometimes be indicators for factors like political views. 
 <!----------------------------------------------------------------------------->
 
 
@@ -152,8 +163,7 @@ Write your research questions **as questions**, and be specific. You can change 
 
 <!-------------------------- Start your work below ---------------------------->
 
-
-
+Is there a relationship between relationship quality and if couple's vaccination statuses match? Does this relationship differ by income categories?
 
 <!----------------------------------------------------------------------------->
 
