@@ -189,6 +189,30 @@ Your task is to create a table that calculates the proportion of missing values 
 
 ```{r}
 ### Explore missingness here ###
+hcmst |>
+  summarize(
+    mean_age = mean(is.na(subject_age)),
+    mean_education = mean(is.na(subject_education)),
+    mean_sex = mean(is.na(subject_sex)),
+    mean_ethnicity = mean(is.na(subject_ethnicity)),
+    mean_incomecat = mean(is.na(subject_income_category)),
+    mean_employment = mean(is.na(subject_employment_status)), 
+    mean_same_sex = mean(is.na(same_sex_couple)),
+    mean_married = mean(is.na(married)),
+    mean_sex_frequency = mean(is.na(sex_frequency)),
+    mean_flirt_frequency = mean(is.na(flirts_with_partner)),
+    mean_fight_frequency = mean(is.na(fights_with_partner)),
+    mean_relation_duration = mean(is.na(relationship_duration)),
+    mean_children = mean(is.na(children)),
+    mean_pandemic_rel_change = mean(is.na(rel_change_during_pandemic)),
+    mean_pandemic_inc_change = mean(is.na(inc_change_during_pandemic)),
+    mean_subject_covid = mean(is.na(subject_had_covid)),
+    mean_partner_covid = mean(is.na(partner_had_covid)),
+    mean_subject_vacc = mean(is.na(subject_vaccinated)),
+    mean_partner_vacc = mean(is.na(partner_vaccinated)),
+    mean_agree_approach = mean(is.na(agree_covid_approach)),
+    mean_relationship_quality = mean(is.na(relationship_quality))
+  )
 
 ```
 
@@ -213,7 +237,7 @@ If missingness is not an issue, describe why.
 
 <!-------------------------- Start your work below ---------------------------->
 
-
+Missingness will not be an issue as I am using the variables of relationship quality, subject vaccination, partner vaccination, and for my secondary question income categories. Each of these have less than 20% of their observations missing (0, 0.8, 1.6, and 0.15 percent respectively).
 
 
 <!----------------------------------------------------------------------------->
@@ -239,10 +263,10 @@ Show the first 6 rows of the tidied data.
 
 <!-------------------------- Start your work below ---------------------------->
 ```{r}
-
-
-
-
+hcmst_tidy <- hcmst |>
+  mutate(vaccination_match = subject_vaccinated == partner_vaccinated, na.rm = TRUE) |>
+  select(vaccination_match, relationship_quality, subject_income_category, children) 
+hcmst_tidy
 ```
 
 <!----------------------------------------------------------------------------->
@@ -256,10 +280,12 @@ Show the outputted table.
 
 <!-------------------------- Start your work below ---------------------------->
 ```{r}
-
-
-
-
+hcmst_tidy |>
+  summarize(
+    mean_children = mean(children),
+    min_children = min(children),
+    max_children = max(children)
+  )
 ```
 
 <!----------------------------------------------------------------------------->
@@ -267,9 +293,6 @@ Show the outputted table.
 ### 2.5: Commit  **(2 points)**
 
 Commit your work and push it to GitHub. , and include "(2.7)" in the message.
-
-
-
 
 
 # Task 3: Tidy Your Submission Overall
